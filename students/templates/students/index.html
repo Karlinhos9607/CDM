@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>PPE 3</title>
+
+    {% load static %}
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'students/css/bootstrap.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'students/css/bootstrap.min.css' %}" />
+
+</head>
+
+<body>
+    <div class="container">
+        <h1> Relevé de notes </h1>
+
+        <!-- Création d'un tableau de notes -->
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Etudiants</th>
+                    {% for matiere in matieres %}
+                    <th scope="col"> {{matiere.name}} </th>
+                    {% endfor %}
+                    <th scope="col"> Moyenne </th>
+                    <th scope="col"> Commentaires </th>
+
+                </tr>
+            </thead>
+        <!-- Affiche les étudiants et leur moyennne -->
+            <tbody>
+                {% for etudiant in etudiants %}
+                <tr>
+                    <td>{{ etudiant.name}}</td>
+                    {% for note in notes %}
+                        {% if etudiant.id == note.etudiant_id %}
+                            <td> {{note.note}} </td>
+                        {% endif %}
+                    {% endfor %}
+                    {% for key,moyenne in moyennes.items %}
+                        {% if key == etudiant.id %}
+                            <td> {{ moyenne }}</td>
+                            <td>
+                                {% if moyenne > 12 and moyenne < 14 %}
+                                    Assez bien
+                                {% elif moyenne > 14 and moyenne < 16 %}
+                                    Bien
+                                {% elif moyenne > 16 %}
+                                    Très bien
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Ajout d'un etudiant -->
+        <form action="{% url 'ajout_etudiant' %}" method="post">
+
+            <div class="col-xs-2">
+                {% csrf_token %}
+                {{ formEtudiant }}
+            </div>
+            <button type="submit" class="btn btn-primary">Add a students</button>
+        </form>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Add a note 
+        </button>
+    </div>
+
+    <!-- Ouverture d'un modal (fenetre) pour l'ajout d'une note -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Add a note</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form action="{% url 'ajout_note' %}" method="post">
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        {{ form }}
+
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add a students</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>
